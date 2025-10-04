@@ -2,11 +2,14 @@
 import { GoogleGenAI, Type, Chat } from "@google/genai";
 import type { ScreeningResult } from '../types';
 
-if (!process.env.API_KEY) {
-    throw new Error("API_KEY environment variable not set");
+// Get API key from environment variables
+const API_KEY = (import.meta as any).env.VITE_API_KEY;
+
+if (!API_KEY) {
+    throw new Error("VITE_API_KEY environment variable not set. Please add it to your .env.local file.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 const screeningResultSchema = {
     type: Type.OBJECT,
