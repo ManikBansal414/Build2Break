@@ -154,6 +154,23 @@ class MemoryService {
     return `candidate_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
+  // Update candidate status helper
+  updateCandidateStatus(id: string, status: 'screened' | 'hired' | 'onboarding' | 'completed'): boolean {
+    const candidate = this.getCandidateRecord(id);
+    if (candidate) {
+      candidate.status = status;
+      candidate.updatedAt = new Date();
+      this.saveCandidateRecord(candidate);
+      return true;
+    }
+    return false;
+  }
+
+  // Get candidates by status
+  getCandidatesByStatus(status: 'screened' | 'hired' | 'onboarding' | 'completed'): CandidateRecord[] {
+    return this.getAllCandidates().filter(c => c.status === status);
+  }
+
   exportAllData(): string {
     return JSON.stringify({
       candidates: this.getAllCandidates(),

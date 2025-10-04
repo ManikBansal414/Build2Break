@@ -76,6 +76,7 @@ const Onboarder: React.FC<OnboarderProps> = ({ candidate, currentCandidateId }) 
             if (workflowState?.metadata?.multipleHires && workflowState?.metadata?.allCandidateIds) {
                 setIsMultipleHires(true);
                 const candidateIds = workflowState.metadata.allCandidateIds as string[];
+                // Always get fresh candidate data from memory service
                 const candidates = candidateIds.map(id => memoryService.getCandidateRecord(id)).filter(Boolean) as CandidateRecord[];
                 setAllCandidates(candidates);
                 
@@ -108,10 +109,69 @@ const Onboarder: React.FC<OnboarderProps> = ({ candidate, currentCandidateId }) 
         setValidationErrors(errors);
     }, [name, role, team]);
 
+    // Auto-save progress when form fields change
+    useEffect(() => {
+        if (currentCandidateId && isMultipleHires && (team || plan)) {
+            const candidate = memoryService.getCandidateRecord(currentCandidateId);
+            if (candidate && (team !== candidate.team || plan !== candidate.onboardingPlan)) {
+                const updatedCandidate: CandidateRecord = {
+                    ...candidate,
+                    team: team || candidate.team,
+                    onboardingPlan: plan || candidate.onboardingPlan,
+                    status: plan ? 'completed' : candidate.status,
+                    updatedAt: new Date()
+                };
+                memoryService.saveCandidateRecord(updatedCandidate);
+            }
+        }
+    }, [team, plan, currentCandidateId, isMultipleHires]);
+
+    // Save progress when component unmounts or candidate changes
+    useEffect(() => {
+        return () => {
+            // Cleanup function - save current progress
+            if (currentCandidateId && isMultipleHires && (team || plan)) {
+                const candidate = memoryService.getCandidateRecord(currentCandidateId);
+                if (candidate && (team !== candidate.team || plan !== candidate.onboardingPlan)) {
+                    const updatedCandidate: CandidateRecord = {
+                        ...candidate,
+                        team: team || candidate.team,
+                        onboardingPlan: plan || candidate.onboardingPlan,
+                        status: plan ? 'completed' : candidate.status,
+                        updatedAt: new Date()
+                    };
+                    memoryService.saveCandidateRecord(updatedCandidate);
+                }
+            }
+        };
+    }, [currentCandidateId, team, plan, isMultipleHires]);
+
     const canSubmit = name.trim().length > 0 && role.trim().length > 0 && team.trim().length > 0 && validationErrors.length === 0;
 
     const switchToCandidate = useCallback((index: number) => {
         if (index >= 0 && index < allCandidates.length) {
+            // Save current candidate's progress before switching
+            if (currentCandidateIndex >= 0 && currentCandidateIndex < allCandidates.length) {
+                const currentCandidate = allCandidates[currentCandidateIndex];
+                if (currentCandidate && (team !== currentCandidate.team || plan !== currentCandidate.onboardingPlan)) {
+                    const updatedCandidate: CandidateRecord = {
+                        ...currentCandidate,
+                        team: team || currentCandidate.team,
+                        onboardingPlan: plan || currentCandidate.onboardingPlan,
+                        status: plan ? 'completed' : currentCandidate.status,
+                        updatedAt: new Date()
+                    };
+                    memoryService.saveCandidateRecord(updatedCandidate);
+                    
+                    // Update the local state to reflect the changes
+                    setAllCandidates(prev => 
+                        prev.map((candidate, idx) => 
+                            idx === currentCandidateIndex ? updatedCandidate : candidate
+                        )
+                    );
+                }
+            }
+            
             const targetCandidate = allCandidates[index];
             setCurrentCandidateIndex(index);
             setName(targetCandidate.personalInfo.name);
@@ -127,7 +187,7 @@ const Onboarder: React.FC<OnboarderProps> = ({ candidate, currentCandidateId }) 
                 memoryService.saveWorkflowState(workflowState);
             }
         }
-    }, [allCandidates]);
+    }, [allCandidates, currentCandidateIndex, team, plan]);
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
@@ -150,10 +210,19 @@ const Onboarder: React.FC<OnboarderProps> = ({ candidate, currentCandidateId }) 
                         ...existingCandidate,
                         team,
                         onboardingPlan: generatedPlan,
-                        status: 'onboarding',
+                        status: 'completed',
                         updatedAt: new Date()
                     };
                     memoryService.saveCandidateRecord(updatedCandidate);
+                    
+                    // Update local state if this is part of multiple hires
+                    if (isMultipleHires) {
+                        setAllCandidates(prev => 
+                            prev.map(candidate => 
+                                candidate.id === currentCandidateId ? updatedCandidate : candidate
+                            )
+                        );
+                    }
                 }
             } else {
                 // Create new candidate record
@@ -163,7 +232,7 @@ const Onboarder: React.FC<OnboarderProps> = ({ candidate, currentCandidateId }) 
                     personalInfo: { name, role },
                     team,
                     onboardingPlan: generatedPlan,
-                    status: 'onboarding',
+                    status: 'completed',
                     createdAt: new Date(),
                     updatedAt: new Date()
                 };
@@ -224,8 +293,10 @@ const Onboarder: React.FC<OnboarderProps> = ({ candidate, currentCandidateId }) 
                                 <div className="font-medium">{candidate.personalInfo.name}</div>
                                 <div className="text-sm text-slate-400">{candidate.personalInfo.role}</div>
                                 <div className="text-xs mt-1">
-                                    {candidate.onboardingPlan ? (
-                                        <span className="text-green-400">✓ Plan Ready</span>
+                                    {candidate.status === 'completed' ? (
+                                        <span className="text-green-400">✓ Completed</span>
+                                    ) : candidate.onboardingPlan ? (
+                                        <span className="text-blue-400">📋 Plan Ready</span>
                                     ) : (
                                         <span className="text-yellow-400">⏳ Pending</span>
                                     )}

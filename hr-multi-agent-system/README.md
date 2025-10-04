@@ -1,6 +1,4 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+
 
 # HR Multi-Agent System
 
@@ -190,14 +188,20 @@ hr-multi-agent-system/
 
 ### Key Features Implemented
 
+
 ✅ **Multi-Agent System** with Manager orchestration  
 ✅ **Memory System** with local storage persistence  
 ✅ **Input Validation** with real-time feedback  
 ✅ **Retry Logic** with exponential backoff  
+
+
+
 ✅ **Error Recovery** with graceful degradation  
 ✅ **Data Export/Import** for backup/restore  
 ✅ **Workflow Management** with state tracking  
 ✅ **Security Features** with XSS protection  
+
+
 ✅ **Responsive Design** with modern UI  
 ✅ **Real-time Validation** with user guidance  
 

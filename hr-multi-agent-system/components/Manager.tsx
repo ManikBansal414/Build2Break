@@ -16,6 +16,13 @@ const Manager: React.FC<ManagerProps> = ({ onNavigateToAgent }) => {
 
   useEffect(() => {
     loadData();
+    
+    // Set up an interval to refresh data periodically
+    const interval = setInterval(() => {
+      loadData();
+    }, 2000); // Refresh every 2 seconds
+    
+    return () => clearInterval(interval);
   }, []);
 
   const loadData = () => {
@@ -166,12 +173,21 @@ const Manager: React.FC<ManagerProps> = ({ onNavigateToAgent }) => {
         <div className="bg-slate-700/50 rounded-lg p-6 border border-slate-600">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold text-cyan-400">Candidates ({candidates.length})</h3>
-            <button
-              onClick={() => onNavigateToAgent(Agent.TalentScout)}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium transition-colors"
-            >
-              Add New
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={loadData}
+                className="px-3 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm font-medium transition-colors"
+                title="Refresh data"
+              >
+                ↻ Refresh
+              </button>
+              <button
+                onClick={() => onNavigateToAgent(Agent.TalentScout)}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium transition-colors"
+              >
+                Add New
+              </button>
+            </div>
           </div>
 
           <div className="space-y-3 max-h-96 overflow-y-auto">
