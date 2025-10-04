@@ -52,6 +52,45 @@ const App: React.FC = () => {
     setActiveAgent(Agent.Onboarder);
   }, []);
 
+  const handleHireMultipleCandidates = useCallback((candidates: CandidateContext[]) => {
+    // Create records for all candidates
+    const candidateIds: string[] = [];
+    
+    candidates.forEach(candidate => {
+      const candidateId = memoryService.generateCandidateId();
+      const candidateRecord: CandidateRecord = {
+        id: candidateId,
+        personalInfo: candidate,
+        status: 'hired',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      memoryService.saveCandidateRecord(candidateRecord);
+      candidateIds.push(candidateId);
+    });
+    
+    // Set the first candidate as current for onboarding
+    setCandidateContext(candidates[0]);
+    setCurrentCandidateId(candidateIds[0]);
+    
+    // Update workflow state with multiple candidates
+    const workflowState: WorkflowState = {
+      currentAgent: 'Onboarder',
+      currentCandidateId: candidateIds[0],
+      workflowStep: 'onboarding',
+      metadata: { 
+        hiredAt: new Date().toISOString(),
+        multipleHires: true,
+        allCandidateIds: candidateIds,
+        totalCandidates: candidates.length
+      }
+    };
+    memoryService.saveWorkflowState(workflowState);
+    
+    setActiveAgent(Agent.Onboarder);
+  }, []);
+
   const handleNavigateToAgent = useCallback((agent: Agent, candidateId?: string) => {
     if (candidateId) {
       const candidate = memoryService.getCandidateRecord(candidateId);
@@ -90,7 +129,7 @@ const App: React.FC = () => {
       case Agent.Manager:
         return <Manager onNavigateToAgent={handleNavigateToAgent} />;
       case Agent.TalentScout:
-        return <TalentScout onHireCandidate={handleHireCandidate} currentCandidateId={currentCandidateId} />;
+        return <TalentScout onHireCandidate={handleHireCandidate} onHireMultipleCandidates={handleHireMultipleCandidates} currentCandidateId={currentCandidateId} />;
       case Agent.Onboarder:
         return <Onboarder candidate={candidateContext} currentCandidateId={currentCandidateId} />;
       case Agent.PolicyQA:

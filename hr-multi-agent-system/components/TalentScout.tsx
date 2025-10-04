@@ -8,6 +8,7 @@ import Spinner from './common/Spinner';
 
 interface TalentScoutProps {
     onHireCandidate: (candidate: CandidateContext) => void;
+    onHireMultipleCandidates: (candidates: CandidateContext[]) => void;
     currentCandidateId?: string | null;
 }
 
@@ -17,7 +18,7 @@ interface ResumeCandidate {
   result?: ScreeningResult;
 }
 
-const TalentScout: React.FC<TalentScoutProps> = ({ onHireCandidate, currentCandidateId }) => {
+const TalentScout: React.FC<TalentScoutProps> = ({ onHireCandidate, onHireMultipleCandidates, currentCandidateId }) => {
   const [jobDescription, setJobDescription] = useState('');
   const [resumeText, setResumeText] = useState('');
   const [resumes, setResumes] = useState<ResumeCandidate[]>([]);
@@ -30,9 +31,37 @@ const TalentScout: React.FC<TalentScoutProps> = ({ onHireCandidate, currentCandi
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
   const [retryCount, setRetryCount] = useState(0);
   const [processingStatus, setProcessingStatus] = useState<string>('');
+  const [showHiringOptions, setShowHiringOptions] = useState(false);
+  const [candidatesToHire, setCandidatesToHire] = useState<number>(1);
+  const [selectedCandidates, setSelectedCandidates] = useState<Set<number>>(new Set());
   
   
   const canSubmit = jobDescription.trim().length > 0 && (resumeText.trim().length > 0 || resumes.length > 0) && validationErrors.length === 0;
+
+  const handleCandidateSelection = (index: number) => {
+    const newSelection = new Set(selectedCandidates);
+    if (newSelection.has(index)) {
+      newSelection.delete(index);
+    } else if (newSelection.size < candidatesToHire) {
+      newSelection.add(index);
+    }
+    setSelectedCandidates(newSelection);
+  };
+
+  const handleProceedWithMultipleHiring = () => {
+    const selectedResults = Array.from(selectedCandidates).map(index => allResults[index]);
+    const candidateContexts = selectedResults.map(result => ({
+      name: result.candidate_name,
+      role: result.role_applied_for
+    }));
+    onHireMultipleCandidates(candidateContexts);
+  };
+
+  const getHireableCandidate = () => {
+    return allResults.filter(candidate => 
+      candidate.recommendation === 'HIRE' || candidate.recommendation === 'STRONG_HIRE'
+    );
+  };
 
   useEffect(() => {
     // Load existing candidate data if editing
@@ -504,13 +533,123 @@ const TalentScout: React.FC<TalentScoutProps> = ({ onHireCandidate, currentCandi
             </div>
           )}
 
-          {(result.recommendation === 'HIRE' || result.recommendation === 'STRONG_HIRE') && (
-            <button
-                onClick={() => onHireCandidate({ name: result.candidate_name, role: result.role_applied_for })}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 mt-4"
-            >
-                🎉 Proceed to Onboarding for {result.candidate_name}
-            </button>
+          {/* Hiring Options */}
+          {getHireableCandidate().length > 0 && (
+            <div className="mt-6 space-y-4">
+              {!showHiringOptions ? (
+                <div className="space-y-3">
+                  <button
+                    onClick={() => onHireCandidate({ name: result.candidate_name, role: result.role_applied_for })}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md transition duration-300"
+                  >
+                    🎉 Hire Top Candidate ({result.candidate_name})
+                  </button>
+                  {getHireableCandidate().length > 1 && (
+                    <button
+                      onClick={() => setShowHiringOptions(true)}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-300"
+                    >
+                      📋 Hire Multiple Candidates
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-slate-900/70 p-4 rounded-lg space-y-4">
+                  <h4 className="font-semibold text-indigo-400 mb-3">Select Candidates to Hire</h4>
+                  
+                  {/* Number of candidates to hire */}
+                  <div className="mb-4">
+                    <label className="block text-slate-300 text-sm font-medium mb-2">
+                      How many candidates would you like to hire?
+                    </label>
+                    <select
+                      value={candidatesToHire}
+                      onChange={(e) => {
+                        const newValue = parseInt(e.target.value);
+                        setCandidatesToHire(newValue);
+                        setSelectedCandidates(new Set());
+                      }}
+                      className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-slate-200"
+                    >
+                      {Array.from({ length: Math.min(getHireableCandidate().length, 5) }, (_, i) => i + 1).map(num => (
+                        <option key={num} value={num}>{num}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Candidate selection */}
+                  <div className="space-y-2">
+                    <p className="text-slate-300 text-sm">
+                      Select {candidatesToHire} candidate{candidatesToHire > 1 ? 's' : ''} from the hireable candidates:
+                    </p>
+                    {getHireableCandidate().map((candidate, index) => {
+                      const originalIndex = allResults.findIndex(c => c === candidate);
+                      const isSelected = selectedCandidates.has(originalIndex);
+                      const canSelect = selectedCandidates.size < candidatesToHire || isSelected;
+                      
+                      return (
+                        <div
+                          key={originalIndex}
+                          className={`p-3 rounded border cursor-pointer transition-all ${
+                            isSelected 
+                              ? 'border-green-500 bg-green-500/20' 
+                              : canSelect
+                                ? 'border-slate-600 hover:border-slate-500 bg-slate-800/50'
+                                : 'border-slate-700 bg-slate-800/30 opacity-50 cursor-not-allowed'
+                          }`}
+                          onClick={() => canSelect && handleCandidateSelection(originalIndex)}
+                        >
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center space-x-3">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                onChange={() => canSelect && handleCandidateSelection(originalIndex)}
+                                className="w-4 h-4 text-green-600 bg-slate-700 border-slate-600 rounded"
+                                disabled={!canSelect}
+                              />
+                              <div>
+                                <span className="font-medium text-slate-200">
+                                  {candidate.candidate_name}
+                                </span>
+                                <span className="text-slate-400 text-sm ml-2">({candidate.role_applied_for})</span>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <span className="text-lg font-bold text-slate-200">{candidate.match_score}/100</span>
+                              <span className="text-sm font-medium text-green-400">
+                                {candidate.recommendation.replace('_', ' ')}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="flex space-x-3 mt-4">
+                    <button
+                      onClick={handleProceedWithMultipleHiring}
+                      disabled={selectedCandidates.size !== candidatesToHire}
+                      className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-md transition duration-300"
+                    >
+                      🎉 Proceed to Onboard {selectedCandidates.size} Candidate{selectedCandidates.size !== 1 ? 's' : ''}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowHiringOptions(false);
+                        setSelectedCandidates(new Set());
+                        setCandidatesToHire(1);
+                      }}
+                      className="px-4 py-3 bg-slate-600 hover:bg-slate-700 text-white font-medium rounded-md transition duration-300"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </div>
       )}

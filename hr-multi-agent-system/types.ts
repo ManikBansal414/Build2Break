@@ -22,6 +22,11 @@ export interface CandidateContext {
     role: string;
 }
 
+export interface HiringDecision {
+    selectedCandidates: ScreeningResult[];
+    totalToHire: number;
+}
+
 export interface ChatMessage {
     role: 'user' | 'model';
     text: string;

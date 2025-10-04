@@ -47,6 +47,9 @@ const Onboarder: React.FC<OnboarderProps> = ({ candidate, currentCandidateId }) 
     const [plan, setPlan] = useState<string | null>(null);
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
     const [retryCount, setRetryCount] = useState(0);
+    const [allCandidates, setAllCandidates] = useState<CandidateRecord[]>([]);
+    const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
+    const [isMultipleHires, setIsMultipleHires] = useState(false);
 
     useEffect(() => {
         if (candidate) {
@@ -66,6 +69,19 @@ const Onboarder: React.FC<OnboarderProps> = ({ candidate, currentCandidateId }) 
                 if (candidateRecord.onboardingPlan) {
                     setPlan(candidateRecord.onboardingPlan);
                 }
+            }
+
+            // Check if this is part of multiple hires
+            const workflowState = memoryService.getWorkflowState();
+            if (workflowState?.metadata?.multipleHires && workflowState?.metadata?.allCandidateIds) {
+                setIsMultipleHires(true);
+                const candidateIds = workflowState.metadata.allCandidateIds as string[];
+                const candidates = candidateIds.map(id => memoryService.getCandidateRecord(id)).filter(Boolean) as CandidateRecord[];
+                setAllCandidates(candidates);
+                
+                // Find current candidate index
+                const currentIndex = candidateIds.findIndex(id => id === currentCandidateId);
+                setCurrentCandidateIndex(currentIndex >= 0 ? currentIndex : 0);
             }
         }
     }, [candidate, currentCandidateId]);
@@ -93,6 +109,25 @@ const Onboarder: React.FC<OnboarderProps> = ({ candidate, currentCandidateId }) 
     }, [name, role, team]);
 
     const canSubmit = name.trim().length > 0 && role.trim().length > 0 && team.trim().length > 0 && validationErrors.length === 0;
+
+    const switchToCandidate = useCallback((index: number) => {
+        if (index >= 0 && index < allCandidates.length) {
+            const targetCandidate = allCandidates[index];
+            setCurrentCandidateIndex(index);
+            setName(targetCandidate.personalInfo.name);
+            setRole(targetCandidate.personalInfo.role);
+            setTeam(targetCandidate.team || '');
+            setPlan(targetCandidate.onboardingPlan || null);
+            setError(null);
+            
+            // Update workflow state to track current candidate
+            const workflowState = memoryService.getWorkflowState();
+            if (workflowState) {
+                workflowState.currentCandidateId = targetCandidate.id;
+                memoryService.saveWorkflowState(workflowState);
+            }
+        }
+    }, [allCandidates]);
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
@@ -156,10 +191,50 @@ const Onboarder: React.FC<OnboarderProps> = ({ candidate, currentCandidateId }) 
             <div>
                 <h2 className="text-2xl font-bold text-indigo-400">Onboarder: Plan Generation</h2>
                 <p className="text-slate-400 mt-1">Enter new hire details to generate a personalized 30-day onboarding plan.</p>
-                {currentCandidateId && (
+                {currentCandidateId && !isMultipleHires && (
                     <p className="text-cyan-400 text-sm mt-1">Creating onboarding plan for existing candidate</p>
                 )}
+                {isMultipleHires && (
+                    <div className="mt-3 p-4 bg-blue-500/20 border border-blue-500/50 rounded-lg">
+                        <p className="text-blue-400 text-sm mb-2">
+                            Processing multiple hires: {allCandidates.length} candidates
+                        </p>
+                        <p className="text-blue-300 text-sm">
+                            Currently onboarding: <strong>{name}</strong> (Candidate {currentCandidateIndex + 1} of {allCandidates.length})
+                        </p>
+                    </div>
+                )}
             </div>
+
+            {/* Multiple Candidates Navigator */}
+            {isMultipleHires && allCandidates.length > 1 && (
+                <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                    <h3 className="text-lg font-semibold text-indigo-400 mb-3">Select Candidate to Onboard</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {allCandidates.map((candidate, index) => (
+                            <button
+                                key={candidate.id}
+                                onClick={() => switchToCandidate(index)}
+                                className={`p-3 rounded-lg border text-left transition-all ${
+                                    index === currentCandidateIndex
+                                        ? 'border-indigo-500 bg-indigo-500/20 text-indigo-300'
+                                        : 'border-slate-600 bg-slate-700/50 text-slate-300 hover:border-slate-500 hover:bg-slate-700'
+                                }`}
+                            >
+                                <div className="font-medium">{candidate.personalInfo.name}</div>
+                                <div className="text-sm text-slate-400">{candidate.personalInfo.role}</div>
+                                <div className="text-xs mt-1">
+                                    {candidate.onboardingPlan ? (
+                                        <span className="text-green-400">✓ Plan Ready</span>
+                                    ) : (
+                                        <span className="text-yellow-400">⏳ Pending</span>
+                                    )}
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Validation Messages */}
             {validationErrors.length > 0 && (
