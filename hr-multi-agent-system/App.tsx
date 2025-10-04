@@ -4,10 +4,11 @@ import { Agent, CandidateContext } from './types';
 import { memoryService, CandidateRecord, WorkflowState } from './services/memoryService';
 import AgentSelector from './components/AgentSelector';
 import TalentScout from './components/TalentScout';
+import MultiAgentProcessor from './components/MultiAgentProcessor';
 import Onboarder from './components/Onboarder';
 import PolicyQA from './components/PolicyQA';
 import Manager from './components/Manager';
-
+  
 const App: React.FC = () => {
   const [activeAgent, setActiveAgent] = useState<Agent>(Agent.Manager);
   const [candidateContext, setCandidateContext] = useState<CandidateContext | null>(null);
@@ -79,6 +80,7 @@ const App: React.FC = () => {
   const getWorkflowStep = (agent: Agent): 'screening' | 'review' | 'onboarding' | 'policy_questions' => {
     switch (agent) {
       case Agent.TalentScout: return 'screening';
+      case Agent.MultiAgentProcessor: return 'screening';
       case Agent.Onboarder: return 'onboarding';
       case Agent.PolicyQA: return 'policy_questions';
       default: return 'review';
@@ -91,6 +93,8 @@ const App: React.FC = () => {
         return <Manager onNavigateToAgent={handleNavigateToAgent} />;
       case Agent.TalentScout:
         return <TalentScout onHireCandidate={handleHireCandidate} currentCandidateId={currentCandidateId} />;
+      case Agent.MultiAgentProcessor:
+        return <MultiAgentProcessor onHireCandidate={handleHireCandidate} />;
       case Agent.Onboarder:
         return <Onboarder candidate={candidateContext} currentCandidateId={currentCandidateId} />;
       case Agent.PolicyQA:

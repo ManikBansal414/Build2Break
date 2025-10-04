@@ -4,6 +4,7 @@ export enum Agent {
   Onboarder = 'Onboarder',
   PolicyQA = 'PolicyQA',
   Manager = 'Manager',
+  MultiAgentProcessor = 'MultiAgentProcessor',
 }
 
 export interface ScreeningResult {

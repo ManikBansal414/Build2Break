@@ -14,6 +14,7 @@ interface AgentSelectorProps {
 const agents = [
   { id: Agent.Manager, name: 'Manager', description: 'Dashboard & Workflow', icon: ManagerIcon },
   { id: Agent.TalentScout, name: 'TalentScout', description: 'Resume Screening', icon: FileTextIcon },
+  { id: Agent.MultiAgentProcessor, name: 'Multi-Agent', description: 'Concurrent Processing', icon: FileTextIcon },
   { id: Agent.Onboarder, name: 'Onboarder', description: 'Onboarding Plans', icon: UserCheckIcon },
   { id: Agent.PolicyQA, name: 'Policy Q&A', description: 'Company Policies', icon: BookOpenIcon },
 ];
