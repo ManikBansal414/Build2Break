@@ -1,0 +1,221 @@
+---
+execute_comprehensive_recruitment_process:
+  description: |-
+    Execute a comprehensive recruitment and talent acquisition process for {job_title} position at {company_name}. Process includes:
+
+    1. **Resume Analysis & Parsing**: Parse and analyze candidate resume from {resume_content}, extract key skills, experience, education, and achievements using advanced NLP techniques
+    2. **Bias Reduction**: Conduct blind screening by removing PII and demographic indicators, apply standardized evaluation criteria, ensure fair assessment protocols
+    3. **Candidate Matching**: Compare candidate qualifications against {job_requirements} using semantic matching, assess skill alignment and experience relevance
+    4. **Cultural Fit Assessment**: Evaluate candidate values alignment with company culture based on experience patterns and communication style
+    5. **Credential Verification**: Analyze provided credentials and experience for consistency and authenticity flags
+    6. **Success Prediction**: Assess likelihood of candidate success based on role requirements, experience patterns, and skill progression
+    7. **Market Analysis**: Provide compensation benchmarking and market positioning insights
+
+    Input: {resume_content}, {job_requirements}, {company_culture}, {budget_range}
+  expected_output: "A comprehensive recruitment analysis report containing:\n- **Candidate
+    Profile**: Detailed anonymized assessment with key qualifications and experience
+    summary\n- **Skill Match Analysis**: Percentage match scores for technical skills,
+    soft skills, and experience requirements with confidence levels  \n- **Bias-Free
+    Evaluation**: Standardized scoring across multiple competency areas with fairness
+    audit confirmation\n- **Cultural Fit Assessment**: Analysis of values alignment,
+    communication style, and team integration potential\n- **Success Prediction Score**:
+    Overall success likelihood with supporting reasoning and risk factors\n- **Market
+    Intelligence**: Compensation benchmarking, competition analysis, and positioning
+    recommendations\n- **Recommendation**: Clear hire/no-hire recommendation with
+    detailed justification and next steps\n- **Red Flags**: Any consistency issues,
+    credential concerns, or areas requiring additional verification\n\nFormat as structured
+    report with executive summary and detailed appendices for stakeholder review."
+  agent: recruitment_specialist_agent
+analyze_performance_and_development:
+  description: "Conduct comprehensive performance analysis and development planning
+    for {employee_name} at {company_name}. Provide:\n\n1. **Real-Time Feedback Analysis**:
+    Process and analyze performance data from {performance_data}, including 360-degree
+    feedback, manager assessments, and peer reviews\n2. **Performance Pattern Recognition**:
+    Identify trends, strengths, areas for improvement, and performance trajectory
+    over time\n3. **Personalized Development Planning**: Create customized development
+    plans based on career goals, skill gaps, and organizational needs\n4. **OKR Tracking
+    & Optimization**: Analyze goal alignment, progress tracking, and recommend adjustments
+    for better outcomes  \n5. **Skill Development Recommendations**: Suggest specific
+    learning opportunities, training programs, and stretch assignments\n6. **Career
+    Path Mapping**: Identify potential career progressions and required competency
+    development\n\nInput: {performance_data}, {career_goals}, {organizational_needs},
+    {skill_assessments}, {feedback_history}"
+  expected_output: |-
+    A comprehensive performance and development analysis containing:
+    - **Performance Summary**: Detailed assessment of current performance across key competencies with trend analysis
+    - **Strengths & Development Areas**: Clear identification of top strengths to leverage and priority areas for improvement
+    - **Personalized Development Plan**: 6-month and 12-month development roadmap with specific actions, resources, and success metrics
+    - **OKR Optimization**: Analysis of current goals with recommendations for alignment, measurement, and achievement strategies
+    - **Learning Recommendations**: Curated list of training programs, courses, mentoring opportunities, and stretch assignments
+    - **Career Path Analysis**: Potential career progressions with required skills, timeline, and development milestones
+    - **Performance Coaching Guide**: Specific recommendations for managers on coaching approaches and support strategies
+    - **Success Metrics**: KPIs for development progress, performance improvement, and career advancement tracking
+
+    Format as actionable performance development portfolio with implementation timelines and success measurements.
+  agent: performance_analyst_agent
+provide_employee_experience_support:
+  description: |-
+    Deliver comprehensive employee experience and engagement support for {company_name} employees. Provide:
+
+    1. **24/7 AI Assistant Capabilities**: Process employee queries using natural language understanding, provide instant responses to HR questions, and escalate complex issues appropriately
+    2. **Policy Interpretation & Guidance**: Analyze {employee_query} against company policies, provide clear explanations with source citations, and offer step-by-step guidance
+    3. **Self-Service Enablement**: Create guides for employees to complete HR tasks independently, troubleshoot common issues, and access relevant resources
+    4. **Engagement Optimization**: Analyze employee sentiment, identify engagement opportunities, and provide personalized recommendations for improvement
+    5. **Proactive Support**: Identify patterns in employee queries, suggest process improvements, and recommend preventive measures
+
+    Input: {employee_query}, {employee_context}, {policy_database}, {engagement_data}, {service_history}
+  expected_output: |-
+    A comprehensive employee experience response containing:
+    - **Immediate Response**: Clear, accurate answer to employee query with confidence level and source citations
+    - **Step-by-Step Guidance**: Detailed process instructions with required forms, deadlines, and contact information when applicable
+    - **Self-Service Resources**: Links to relevant tools, forms, documentation, and tutorials for independent task completion
+    - **Policy References**: Specific policy sections, version numbers, effective dates, and related information
+    - **Escalation Recommendations**: Clear guidance on when and how to contact human specialists for complex issues
+    - **Proactive Suggestions**: Related topics, upcoming deadlines, or opportunities the employee should be aware of
+    - **Engagement Insights**: Personalized recommendations for career development, networking, or company program participation
+    - **Process Improvement**: Suggestions for enhancing employee experience based on query patterns and feedback
+
+    Format as employee-friendly response with professional tone and actionable next steps.
+  agent: employee_relations_agent
+monitor_compliance_and_risk:
+  description: |-
+    Conduct comprehensive compliance monitoring and risk management for {company_name} HR operations. Provide:
+
+    1. **Regulatory Adherence Monitoring**: Continuously monitor HR processes against regulatory requirements (GDPR, EEOC, SOX, industry-specific regulations)
+    2. **Audit Trail Generation**: Create comprehensive documentation of all HR decisions, processes, and actions for compliance verification
+    3. **Risk Detection & Assessment**: Identify potential compliance risks, legal exposure, and process vulnerabilities across HR functions
+    4. **Case Management**: Process HR cases, investigations, and disputes with proper documentation and resolution tracking
+    5. **Policy Compliance Verification**: Ensure all HR activities align with company policies and legal requirements
+    6. **Predictive Risk Analysis**: Analyze patterns to predict potential compliance issues and recommend preventive measures
+
+    Input: {hr_processes}, {regulatory_requirements}, {case_data}, {policy_updates}, {audit_requirements}
+  expected_output: |-
+    A comprehensive compliance and risk assessment containing:
+    - **Compliance Status Report**: Current adherence levels across all regulatory requirements with specific gap identification
+    - **Risk Assessment Matrix**: Detailed analysis of identified risks with severity levels, likelihood, and impact assessments
+    - **Audit Trail Documentation**: Complete process documentation with timestamps, decision rationale, and responsible parties
+    - **Regulatory Update Summary**: Recent regulatory changes affecting HR operations with implementation requirements
+    - **Case Management Report**: Status of active cases, investigation findings, and resolution recommendations
+    - **Policy Alignment Analysis**: Verification of HR processes against company policies with compliance scoring
+    - **Preventive Action Plan**: Specific recommendations to mitigate identified risks and enhance compliance posture
+    - **Training & Development Needs**: Compliance training requirements for HR staff and managers
+
+    Format as executive compliance briefing with actionable risk mitigation strategies and compliance roadmap.
+  agent: compliance_monitor_agent
+design_intelligent_interview_process:
+  description: |-
+    Design and coordinate a comprehensive interview process for {job_title} candidate at {company_name}. Include:
+
+    1. **AI-Driven Question Generation**: Create role-specific, behavioral, and competency-based interview questions tailored to {job_requirements} and company needs
+    2. **Compliance Verification**: Ensure all questions meet legal requirements and avoid discriminatory content across jurisdictions
+    3. **Interview Structure Design**: Create structured interview framework with scoring rubrics, time allocation, and evaluation criteria
+    4. **Stakeholder Coordination**: Design multi-round interview process with appropriate stakeholders (hiring manager, peers, executives)
+    5. **Scheduling Optimization**: Create scheduling framework considering stakeholder availability, candidate preferences, and process efficiency
+    6. **Interview Quality Assurance**: Establish consistency protocols, interviewer training recommendations, and bias reduction techniques
+
+    Input: Candidate assessment from recruitment process, {job_requirements}, {interview_panel}, {timeline_constraints}
+  expected_output: |-
+    A complete interview management package containing:
+    - **Custom Question Bank**: 30+ tailored interview questions across technical skills, behavioral competencies, and cultural fit
+    - **Interview Structure**: Detailed multi-round framework with timing, stakeholders, and evaluation focus for each round
+    - **Scoring Framework**: Standardized evaluation rubrics with behavioral anchors and scoring guidelines
+    - **Compliance Checklist**: Legal review of all questions with jurisdiction-specific compliance verification
+    - **Coordination Plan**: Stakeholder schedule coordination templates, logistics planning, and communication protocols
+    - **Quality Assurance**: Interviewer briefing materials, bias reduction techniques, and consistency protocols
+    - **Candidate Experience**: Candidate communication templates, process transparency, and feedback mechanisms
+    - **Decision Framework**: Post-interview evaluation process, decision criteria, and reference check procedures
+
+    Format as interview management toolkit with templates, checklists, and process documentation.
+  agent: interview_coordinator_agent
+  context:
+  - execute_comprehensive_recruitment_process
+generate_hr_analytics_and_insights:
+  description: |-
+    Provide comprehensive HR analytics and strategic insights for {company_name}. Deliver:
+
+    1. **Advanced Analytics**: Analyze HR data across recruitment, performance, engagement, retention, and compliance to identify trends and patterns
+    2. **Benchmarking Analysis**: Compare HR metrics against industry standards, best practices, and competitor insights
+    3. **Conversational Analytics**: Process natural language queries about HR data and generate relevant insights and visualizations
+    4. **Trend Identification**: Identify emerging patterns in workforce data, performance metrics, and engagement indicators
+    5. **Strategic Recommendations**: Provide data-driven recommendations for HR strategy, process optimization, and resource allocation
+    6. **Predictive Insights**: Analyze historical data to predict future trends in hiring needs, retention risks, and performance outcomes
+
+    Input: {hr_data}, {analytics_query}, {benchmarking_requirements}, {performance_metrics}, {engagement_surveys}
+  expected_output: |-
+    A comprehensive HR analytics report containing:
+    - **Executive Dashboard**: Key HR metrics with trends, comparisons, and performance indicators across all HR functions
+    - **Benchmarking Analysis**: Detailed comparison with industry standards, peer organizations, and best-in-class metrics
+    - **Trend Analysis**: Identification of significant patterns in hiring, performance, retention, and engagement data
+    - **Predictive Insights**: Forecasting for hiring needs, retention risks, performance trends, and budget planning
+    - **Strategic Recommendations**: Data-driven suggestions for HR strategy, process improvements, and resource optimization
+    - **Custom Analytics**: Responses to specific analytical queries with relevant data visualization and insights
+    - **Risk & Opportunity Assessment**: Identification of HR-related business risks and growth opportunities
+    - **Action Plan**: Prioritized recommendations with implementation timelines and success metrics
+
+    Format as strategic analytics briefing with executive summary and detailed analytical appendices.
+  agent: hr_analytics_agent
+  context:
+  - execute_comprehensive_recruitment_process
+  - analyze_performance_and_development
+  - provide_employee_experience_support
+  - monitor_compliance_and_risk
+create_adaptive_onboarding_experience:
+  description: |-
+    Design and implement a comprehensive, adaptive onboarding program for new {job_title} hire at {company_name}. Create:
+
+    1. **Personalized Onboarding Path**: Adapt onboarding journey based on {new_hire_profile}, role requirements, department needs, and individual learning preferences
+    2. **Task Orchestration Automation**: Create automated workflows for documentation, system provisioning, access management, and completion tracking
+    3. **Multi-Phase Integration**: Design 90-day journey with immediate (Week 1), integration (Weeks 2-4), and acceleration (Months 2-3) phases
+    4. **Stakeholder Coordination**: Orchestrate tasks across managers, IT, HR, mentors, and team members with clear ownership and timelines
+    5. **AI-Powered Guidance**: Provide intelligent recommendations for learning resources, networking opportunities, and skill development
+    6. **Progress Monitoring**: Implement milestone tracking, feedback collection, and adaptive adjustment mechanisms
+
+    Input: {new_hire_profile}, hiring decision context, {team_context}, {manager_preferences}, {company_policies}
+  expected_output: |-
+    A comprehensive adaptive onboarding experience containing:
+    - **Personalized Journey Map**: 90-day onboarding roadmap adapted to individual needs, role requirements, and learning preferences
+    - **Automated Task Orchestration**: Detailed workflows for system setup, documentation, training schedules, and milestone tracking
+    - **Stakeholder Coordination Matrix**: Clear assignments for all stakeholders with timelines, dependencies, and accountability measures
+    - **Learning & Development Plan**: Curated learning resources, skill assessments, mentoring programs, and networking opportunities
+    - **Integration Activities**: Team introductions, cultural immersion, project assignments, and collaboration opportunities
+    - **Progress Monitoring System**: Milestone checklists, feedback mechanisms, satisfaction surveys, and adjustment protocols
+    - **Success Metrics**: KPIs for onboarding effectiveness, time-to-productivity, engagement levels, and retention indicators
+    - **Contingency Planning**: Alternative approaches for remote employees, different learning styles, or unexpected challenges
+
+    Format as implementation-ready onboarding program with automated workflows and success measurement framework.
+  agent: onboarder_agent
+  context:
+  - design_intelligent_interview_process
+orchestrate_enterprise_hr_automation:
+  description: |-
+    Coordinate and orchestrate the comprehensive multi-agent HR automation platform for {company_name} based on requested {hr_process_type}. Manage:
+
+    1. **Workflow Routing**: Intelligently route HR requests to appropriate specialized agents based on process type (recruitment, performance, employee_support, compliance, analytics)
+    2. **Cross-Functional Integration**: Coordinate workflows that span multiple HR functions, ensuring seamless handoffs and data flow between agents
+    3. **Quality Assurance**: Validate outputs from all agents for completeness, accuracy, compliance, and alignment with organizational standards
+    4. **Strategic Coordination**: Ensure all HR processes align with business objectives, compliance requirements, and employee experience standards
+    5. **Performance Optimization**: Monitor automation efficiency, identify bottlenecks, and optimize workflows for maximum effectiveness
+    6. **Executive Reporting**: Compile comprehensive results across all HR functions into executive-ready insights and recommendations
+
+    Input: {hr_process_type}, {priority_level}, {compliance_requirements}, {stakeholder_needs}, outputs from specialized agents
+  expected_output: |-
+    A comprehensive enterprise HR automation result containing:
+    - **Process Execution Summary**: Overview of all HR workflows executed with success metrics and performance indicators
+    - **Cross-Functional Integration**: Analysis of how different HR processes connect and influence each other with optimization recommendations
+    - **Quality Assurance Report**: Validation results for all agent outputs with compliance verification and quality scoring
+    - **Strategic Insights**: Executive-level analysis of HR operations with strategic recommendations and business impact assessment
+    - **Performance Analytics**: Automation efficiency metrics, process optimization opportunities, and ROI analysis
+    - **Stakeholder Communications**: Tailored summaries for different audiences (executives, managers, employees, compliance teams)
+    - **Action Plan**: Prioritized next steps for HR leadership with timelines, ownership, and success metrics
+    - **System Health Report**: Status of all agents, tools, and processes with maintenance and improvement recommendations
+
+    Format as comprehensive executive briefing with strategic insights, operational metrics, and actionable recommendations.
+  agent: chief_hr_orchestrator
+  context:
+  - execute_comprehensive_recruitment_process
+  - design_intelligent_interview_process
+  - create_adaptive_onboarding_experience
+  - analyze_performance_and_development
+  - provide_employee_experience_support
+  - monitor_compliance_and_risk
+  - generate_hr_analytics_and_insights
